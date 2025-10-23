@@ -1,0 +1,79 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username: dbuser
+      password: dbpassword
+      timeout: 1000
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 8
+          min-idle: 0
+    mongodb:
+      uri: mongodb://localhost:27017/callbackdb_testing
+      username: wacdc
+      password: password
+      database: callbackdb_testing
+      host: localhost
+      port: 27017
+      options:
+        minPoolSize: 10
+        maxPoolSize: 20
+        writeConcern: 1
+        writePreference: primary
+        readPreference: secondaryPreferred
+        maxWaitTime: 5000
+        maxConnectionIdleTime: 30000
+        maxConnectionLifeTime: 3600000
+        autoIndexCreation: false
+        serverSelectionTimeout: 5000
+        connectionTimeout: 5000
+        readTimeout: 5000
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      balance-event-group-id: bal-event-processor
+      balance-event-dlq-group-id: bal-event-processor-dlq
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer 
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: true
+      concurrency: 1
+      max-poll-records: 1000
+      fetch-min-bytes: 1048576
+      session-timeout-ms: 30000
+      max-poll-interval-ms: 300000
+      fetch-max-wait-ms: 500
+      auto-offset-reset: latest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      
+
+kafka:
+  topic:
+    balance-event: balance-events
+    balance-event-dlq: balance-events-dlq
+
+server:
+  port: 7375
+  tomcat:
+    threads:
+      max:  25
+      min-spare: 10
+    connection-timeout: 3000
+
+bep:
+  processor:
+    scale: 100000
+    fixed-rate: 5000 #in ms
+
+async:
+  balance-events:
+    core-pool-size: 2
+    max-pool-size: 4
+    queue-capacity: 1024
+    thread-name-prefix: async-bal-

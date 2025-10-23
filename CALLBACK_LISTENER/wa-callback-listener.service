@@ -1,0 +1,16 @@
+[Unit]
+Description=wa-callback-listener-service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/java -Xms256m -Xmx3072m -Dlogging.config=file:/opt/wa-callback-listener/logback.xml -Dserver.port=3000 -jar /opt/wa-callback-listener/wa-callback-listener-0.0.5-SNAPSHOT.jar --spring.config.location=file:/opt/wa-callback-listener/application.yml
+WorkingDirectory=/opt/wa-callback-listener
+Restart=on-failure
+RestartSec=5s
+User=root
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=wa-callback-listener-service
+
+[Install]
+WantedBy=multi-user.target

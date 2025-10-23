@@ -1,0 +1,16 @@
+[Unit]
+Description=bal-event
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/java -Xms256m -Xmx3072m -Dlogging.config=file:/opt/bal-event/logback.xml -Dserver.port=3000 -jar /opt/bal-event/bal-event-processor-0.0.1-SNAPSHOT.jar --spring.config.location=file:/opt/bal-event/application.yml
+WorkingDirectory=/opt/bal-event
+Restart=on-failure
+RestartSec=5s
+User=root
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=bal-event
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: wa-callback-listener
+  config:
+    location: file:custom-properties.yml
+    
+  threads:
+    virtual:
+      enabled: false
+  kafka:
+    bootstrap-servers: localhost:29094
+#    - host.docker.internal:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      #value-serializer: in.pinnacle.apps.wac.util.CustomJsonSerializer
+      #value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      
+
+
+server:
+  port: 7474
+  tomcat:
+    threads:
+      max:  25
+      min-spare: 10
+    connection-timeout: 3000
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        
+# Kafka topics for different event types
+kafka:
+  topic:
+    #status-events: test
+    status-events: wacallback_statuses_
+    split-statuses: true
+    status-topic-count: 16 #count no of topics needed + 1
+    sent-status: wacallback_sent_topic
+    delivered-status: wacallback_delivered_topic
+    read-status: wacallback_read_topic
+    failed-status: wacallback_failed_topic
+    msg-events: wacallback_contacts
+    mgmt-events: wacallback_management
+
+# Async thread pool configuration for different event types
+async:
+  status-events:
+    core-pool-size: 2
+    max-pool-size: 4
+    queue-capacity: 1024
+    thread-name-prefix: async-dlr-
+  msg-events:
+    core-pool-size: 2
+    max-pool-size: 4
+    queue-capacity: 1024
+    thread-name-prefix: async-msg-
+  mgmt-events:
+    core-pool-size: 1
+    max-pool-size: 2
+    queue-capacity: 1024
+    thread-name-prefix: async-mgmt-
+      
+wa:
+  verify-token: f5369e75-41fc-4402-91bb-8023eb504963
